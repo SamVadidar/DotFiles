@@ -44,7 +44,7 @@ call plug#begin('~/.vim/plugged')
 Plug 'luochen1990/rainbow'
 " Plug 'tmhedberg/SimpylFold'
 Plug 'vim-scripts/indentpython.vim'
-Plug 'Valloric/YouCompleteMe'
+"Plug 'Valloric/YouCompleteMe'
 Plug 'vim-syntastic/syntastic'
 Plug 'nvie/vim-flake8'
 " Code commenter
@@ -206,6 +206,22 @@ set shiftwidth=4
 set expandtab
 set fileformat=unix 
 
+" To use fancy symbols wherever possible, change this setting from 0 to 1
+" and use a font from https://github.com/ryanoasis/nerd-fonts in your terminal
+" (if you aren't using one of those fonts, you will see funny characters here.
+" Turst me, they look nice when using one of those fonts).
+let fancy_symbols_enabled = 0
+
+"python with virtualenv support
+"py3 << EOF
+"import os
+"import sys
+"if 'VIRTUAL_ENV' in os.environ:
+"  project_base_dir = os.environ['VIRTUAL_ENV']
+"  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+"  execfile(activate_this, dict(__file__=activate_this))
+"EOF
+
 " ===========================================================================
 " Vim settings and mappings
 " You can edit them as you wish
@@ -221,4 +237,41 @@ map <leader><C-t> :NERDTree<CR>
 let g:airline_powerline_fonts = 0
 let g:airline_theme = 'bubblegum'
 let g:airline#extensions#whitespace#enabled = 0
+
+" Fancy Symbols!!
+
+if fancy_symbols_enabled
+    let g:webdevicons_enable = 1
+
+    " custom airline symbols
+    if !exists('g:airline_symbols')
+       let g:airline_symbols = {}
+    endif
+    let g:airline_left_sep = ''
+    let g:airline_left_alt_sep = ''
+    let g:airline_right_sep = ''
+    let g:airline_right_alt_sep = ''
+    let g:airline_symbols.branch = '⭠'
+    let g:airline_symbols.readonly = '⭤'
+    let g:airline_symbols.linenr = '⭡'
+else
+    let g:webdevicons_enable = 0
+endif
+
+" enable/disable virtualenv integration
+"let g:airline#extensions#virtualenv#enabled = 1
+
+" Neomake ------------------------------
+
+" Run linter on write
+autocmd! BufWritePost * Neomake
+
+" Check code as python3 by default
+let g:neomake_python_python_maker = neomake#makers#ft#python#python()
+let g:neomake_python_flake8_maker = neomake#makers#ft#python#flake8()
+let g:neomake_python_python_maker.exe = 'python3 -m py_compile'
+let g:neomake_python_flake8_maker.exe = 'python3 -m flake8'
+
+" Disable error messages inside the buffer, next to the problematic line
+let g:neomake_virtualtext_current_error = 0
 
