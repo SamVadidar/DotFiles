@@ -1,16 +1,19 @@
 " Vim Config
 
 set encoding=utf-8
+set belloff=all
 " ===========================================================================
 " Mapping
 
-let mapleader = "\<Space>"
+let mapleader = " "
 
 nmap <leader>so :source $MYVIMRC<cr>
 nmap <leader><Enter> i<Enter><Esc>
-nmap <leader><leader> li<Space>h<Esc>
-map <leader>l >
-map <leader>h =
+nmap <leader><leader> li<Space><Esc>h
+map <leader>l :wincmd l<CR>
+map <leader>j :wincmd j<CR>
+map <leader>h :wincmd h<CR>
+map <leader>k :wincmd k<CR>
 
 "split stuff
 map <leader>s :vsplit <C-R>=escape(expand("%:p:h"), ' ') . '/'<CR>
@@ -21,12 +24,16 @@ set splitbelow
 "new tab stuff
 map <leader>t :tabedit <C-R>=escape(expand("%:p:h"), ' ') . '/'<CR>
 nmap <leader>vi :tabe $MYVIMRC<cr>
-
+ 
 " Mapping in insert mode from Esc to jj, then save the file
 " CR stands for Carriage Return (Enter key)"
 imap jj <Esc>:w<CR>
 nmap k gk
 nmap j gj
+
+"Press F9 to run the current python script
+autocmd FileType python map <buffer> <leader>g :w<CR>:exec '!python3' shellescape(@%, 1)<CR>
+autocmd FileType python imap <buffer> <leader>g <esc>:w<CR>:exec '!python3' shellescape(@%, 1)<CR>
 
 " Typoed commands
 command! Q q
@@ -41,6 +48,12 @@ command! E e
 " this needs to be here, so vim-plug knows we are declaring the plugins
 call plug#begin('~/.vim/plugged')
 
+Plug 'jremmen/vim-ripgrep'
+Plug 'leafgarland/typescript-vim'
+Plug 'vim-utils/vim-man'
+Plug 'lyuts/vim-rtags'
+
+" for paranthesis
 Plug 'luochen1990/rainbow'
 " Plug 'tmhedberg/SimpylFold'
 Plug 'vim-scripts/indentpython.vim'
@@ -48,42 +61,45 @@ Plug 'vim-scripts/indentpython.vim'
 Plug 'vim-syntastic/syntastic'
 Plug 'nvie/vim-flake8'
 " Code commenter
-Plug 'scrooloose/nerdcommenter'
+"Plug 'scrooloose/nerdcommenter'
 " Better file browser
 Plug 'scrooloose/nerdtree'
 " Class/module browser
-Plug 'majutsushi/tagbar'
+"Plug 'majutsushi/tagbar'
 " Search results counter
-Plug 'vim-scripts/IndexedSearch'
+"Plug 'vim-scripts/IndexedSearch'
 " Code and files fuzzy finder
 Plug 'ctrlpvim/ctrlp.vim'
 " Git integration
-Plug 'tpope/vim-fugitive'
+"Plug 'tpope/vim-fugitive'
 " Surround
-Plug 'tpope/vim-surround'
+"Plug 'tpope/vim-surround'
 " Repeat the previous command
-Plug 'tpope/vim-repeat'
+"Plug 'tpope/vim-repeat'
 "Plug 'tpope/vim-commentary'
 " Plug 'joshdick/onedark.vim'
 " Colorscheme
 Plug 'tomasr/molokai'
+Plug 'morhetz/gruvbox'
 Plug 'patstockwell/vim-monokai-tasty'
 Plug 'jnurmine/Zenburn'
 Plug 'altercation/vim-colors-solarized'
 " Airline
 Plug 'vim-airline/vim-airline'
 Plug 'vim-airline/vim-airline-themes'
+" Powerline
+"Plug 'powerline/powerline'
 " Python autocompletion
 Plug 'deoplete-plugins/deoplete-jedi'
 " Completion from other opened files
 Plug 'Shougo/context_filetype.vim'
-" Just to add the python go-to-definition and similar features, autocompletion
-" from this plugin is disabled
+" Just to add the python go-to-definition and similar features
+" autocompletion from this plugin is disabled
 Plug 'davidhalter/jedi-vim'
 " Automatically close parenthesis, etc
 Plug 'Townk/vim-autoclose'
 " Linters
-Plug 'neomake/neomake'
+"Plug 'neomake/neomake'
 " Indent text object
 Plug 'michaeljsmith/vim-indent-object'
 " Indentation based movements
@@ -95,11 +111,11 @@ Plug 'mileszs/ack.vim'
 " Paint css colors with the real color
 Plug 'lilydjwg/colorizer'
 " Window chooser
-Plug 't9md/vim-choosewin'
+"Plug 't9md/vim-choosewin'
 " Automatically sort python imports
-Plug 'fisadev/vim-isort'
+"Plug 'fisadev/vim-isort'
 " Yank history navigation
-Plug 'vim-scripts/YankRing.vim'
+"Plug 'vim-scripts/YankRing.vim'
 " Nice icons in the file explorer and file type status line.
 Plug 'ryanoasis/vim-devicons'
 
@@ -163,7 +179,7 @@ set hlsearch
 " for rainbow parentheses
 let g:rainbow_active = 1 "set to 0 if you want to enable it later via :RainbowToggle
 "let g:airline_theme='onedark'
-colorscheme vim-monokai-tasty 
+colorscheme gruvbox 
 set background=dark
 
 let g:SimpylFold_docstring_preview=1
@@ -213,14 +229,16 @@ set fileformat=unix
 let fancy_symbols_enabled = 0
 
 "python with virtualenv support
-"py3 << EOF
-"import os
-"import sys
-"if 'VIRTUAL_ENV' in os.environ:
-"  project_base_dir = os.environ['VIRTUAL_ENV']
-"  activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
-"  execfile(activate_this, dict(__file__=activate_this))
-"EOF
+python3<<EOF
+import os
+import sys
+if 'VIRTUAL_ENV' in os.environ:
+    project_base_dir = os.environ['VIRTUAL_ENV']
+    activate_this = os.path.join(project_base_dir, 'bin/activate_this.py')
+    with open(activate_this) as f:
+        code = compile(f.read(), activate_this, 'exec')
+        exec(code, dict(__file__=activate_this))
+EOF
 
 " ===========================================================================
 " Vim settings and mappings
@@ -258,20 +276,38 @@ else
     let g:webdevicons_enable = 0
 endif
 
-" enable/disable virtualenv integration
+"" enable/disable virtualenv integration
 "let g:airline#extensions#virtualenv#enabled = 1
+"
+""" Neomake ------------------------------
+""
+""" Run linter on write
+""autocmd! BufWritePost * Neomake
+""
+""" Check code as python3 by default
+""let g:neomake_python_python_maker = neomake#makers#ft#python#python()
+""let g:neomake_python_flake8_maker = neomake#makers#ft#python#flake8()
+""let g:neomake_python_python_maker.exe = 'python3 -m py_compile'
+""let g:neomake_python_flake8_maker.exe = 'python3 -m flake8'
+""
+""" Disable error messages inside the buffer, next to the problematic line
+""let g:neomake_virtualtext_current_error = 0
+""
+" Jedi-vim ------------------------------
 
-" Neomake ------------------------------
+" Disable autocompletion (using deoplete instead)
+let g:jedi#completions_enabled = 0
 
-" Run linter on write
-autocmd! BufWritePost * Neomake
+" All these mappings work only for python code:
+" Go to definition
+let g:jedi#goto_command = ',d'
+" Find ocurrences
+let g:jedi#usages_command = ',o'
+" Find assignments
+let g:jedi#goto_assignments_command = ',a'
+" Go to definition in new tab
+nmap ,D :tab split<CR>:call jedi#goto()<CR>
 
-" Check code as python3 by default
-let g:neomake_python_python_maker = neomake#makers#ft#python#python()
-let g:neomake_python_flake8_maker = neomake#makers#ft#python#flake8()
-let g:neomake_python_python_maker.exe = 'python3 -m py_compile'
-let g:neomake_python_flake8_maker.exe = 'python3 -m flake8'
 
-" Disable error messages inside the buffer, next to the problematic line
-let g:neomake_virtualtext_current_error = 0
+
 
