@@ -3,9 +3,9 @@
 You can clone it and make a sim. Link to your corresponding file
 
 ## Example for Vim
-### Sim. Link to your Vimrc
+### Sim. Link to your Vimrc (make sure you do not use a relative path for simlink"
 ```  
-ln -s path/to/this/Vimrc ~/.vimrc
+ln -s FULLPATH/to/this/Vimrc ~/.vimrc
 ```
 ### Install Plug manager
 ```
