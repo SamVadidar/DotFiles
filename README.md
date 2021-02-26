@@ -4,8 +4,17 @@ You can clone it and make a sim. Link to your corresponding file
 
 ## Example for Vim
 ### Sim. Link to your Vimrc
-```
+```  
 ln -s path/to/this/Vimrc ~/.vimrc
+```
+### Install Plug manager
+```
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+```
+### Run this command inside vim
+```
+:PlugInstall
 ```
 
 ### Install YouCompleteMe binary
