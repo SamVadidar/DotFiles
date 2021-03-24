@@ -15,6 +15,11 @@ map <leader>j :wincmd j<CR>
 map <leader>h :wincmd h<CR>
 map <leader>k :wincmd k<CR>
 
+"deactive relative number
+map <leader>R :RltvNmbr!<CR>
+"active relative number
+map <leader>r :RltvNmbr<CR>
+
 "split stuff
 map <leader>s :vsplit <C-R>=escape(expand("%:p:h"), ' ') . '/'<CR>
 map <leader>e :e <C-R>=escape(expand("%:p:h"), ' ') . '/'<CR>
@@ -53,6 +58,8 @@ Plug 'leafgarland/typescript-vim'
 Plug 'vim-utils/vim-man'
 Plug 'lyuts/vim-rtags'
 
+" for relative line number
+Plug 'vim-scripts/RltvNmbr.vim'
 " for paranthesis
 Plug 'luochen1990/rainbow'
 " Plug 'tmhedberg/SimpylFold'
