@@ -9,6 +9,7 @@ let mapleader = " "
 
 nmap <leader>so :source $MYVIMRC<cr>
 nmap <leader><Enter> i<Enter><Esc>
+nmap <leader><Tab> a<Tab><Esc>
 nmap <leader><leader> li<Space><Esc>h
 map <leader>l :wincmd l<CR>
 map <leader>j :wincmd j<CR>
